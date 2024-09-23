@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { dark } from "@clerk/themes";
-import { Loader2 } from "lucide-react";
+import { BriefcaseIcon, SunIcon, MoonIcon, Loader2 } from "lucide-react";
 import {
   UserButton,
   ClerkLoading,
@@ -13,7 +13,7 @@ import {
 } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
-import { BriefcaseIcon, SunIcon, MoonIcon } from "lucide-react";
+import { HeaderLogo } from "./header-logo";
 
 export function Header() {
   const { setTheme, theme } = useTheme();
@@ -23,11 +23,8 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-2">
-              <BriefcaseIcon className="h-6 w-6 text-primary" />
-              <span className="font-bold text-xl text-foreground">
-                JobBoard
-              </span>
+            <Link href="/" className="flex items-center ">
+              <HeaderLogo />
             </Link>
             <nav className="hidden md:flex ml-6 space-x-4">
               <Link
