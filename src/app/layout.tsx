@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { QueryProvider } from "@/providers/query-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import "./globals.css";
@@ -33,18 +34,20 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <div className="flex flex-col min-h-screen">
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
-            </div>
-          </ThemeProvider>
+          <QueryProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow">{children}</main>
+                <Footer />
+              </div>
+            </ThemeProvider>
+          </QueryProvider>
         </body>
       </html>
     </ClerkProvider>

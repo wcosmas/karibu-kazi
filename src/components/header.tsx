@@ -3,7 +3,14 @@
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import { dark } from "@clerk/themes";
-import { BriefcaseIcon, SunIcon, MoonIcon, Loader2 } from "lucide-react";
+import {
+  BriefcaseIcon,
+  SunIcon,
+  MoonIcon,
+  Loader2,
+  UserPen,
+  FolderOpen,
+} from "lucide-react";
 import {
   UserButton,
   ClerkLoading,
@@ -14,6 +21,18 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "./header-logo";
+
+const DotIcon = () => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      fill="currentColor"
+    >
+      <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z" />
+    </svg>
+  );
+};
 
 export function Header() {
   const { setTheme, theme } = useTheme();
@@ -68,11 +87,23 @@ export function Header() {
             <SignedIn>
               <ClerkLoaded>
                 <UserButton
-                  afterSignOutUrl="/"
                   appearance={{
                     baseTheme: theme === "dark" ? dark : undefined,
                   }}
-                />
+                >
+                  <UserButton.MenuItems>
+                    <UserButton.Link
+                      label="Applications"
+                      href="/applications"
+                      labelIcon={<FolderOpen size={15} />}
+                    />
+                    <UserButton.Link
+                      label="Profile"
+                      href="/profile"
+                      labelIcon={<UserPen size={15} />}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
               </ClerkLoaded>
               <ClerkLoading>
                 <Loader2 className="size-8 animate-spin text-slate-100" />
