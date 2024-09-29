@@ -21,6 +21,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { HeaderLogo } from "./header-logo";
+import { useGetProfile } from "@/features/profile/api/use-get-profile";
 
 const DotIcon = () => {
   return (
@@ -35,6 +36,7 @@ const DotIcon = () => {
 };
 
 export function Header() {
+  const { data: profile } = useGetProfile();
   const { setTheme, theme } = useTheme();
 
   return (
@@ -97,11 +99,17 @@ export function Header() {
                       href="/applications"
                       labelIcon={<FolderOpen size={15} />}
                     />
-                    <UserButton.Link
-                      label="Profile"
-                      href="/profile"
-                      labelIcon={<UserPen size={15} />}
-                    />
+                    {profile && (
+                      <UserButton.Link
+                        label="Profile"
+                        href={
+                          profile.role === "JOBSEEKER"
+                            ? "/profile/job-seeker"
+                            : "/profile/employer"
+                        }
+                        labelIcon={<UserPen size={15} />}
+                      />
+                    )}
                   </UserButton.MenuItems>
                 </UserButton>
               </ClerkLoaded>
