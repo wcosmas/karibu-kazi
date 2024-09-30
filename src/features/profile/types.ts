@@ -36,3 +36,8 @@ export const ExperienceSchema = z.object({
 
 export type ExperienceSchema = z.infer<typeof ExperienceSchema>;
 
+export type EducationFormData = Omit<
+    Education,
+    "id" | "createdAt" | "updatedAt" | "profileId"
+>;
+

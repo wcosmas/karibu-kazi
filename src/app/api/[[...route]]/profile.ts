@@ -403,10 +403,49 @@ const app = new Hono()
                 return c.json({ error: "Profile not found" }, 404);
             }
 
+            // @ts-ignore
+            const updatedSkills = [...new Set([...profile.skills, ...skills])];
+
             const updatedProfile = await db.profile.update({
                 where: { id: profile.id },
                 data: {
-                    skills,
+                    skills: updatedSkills,
+                },
+            });
+
+            return c.json({ updatedProfile });
+        }
+    )
+    .delete(
+        "/skills",
+        clerkMiddleware(),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const { skill } = await c.req.json();
+
+            if (!skill || typeof skill !== 'string') {
+                return c.json({ error: "Invalid skill provided" }, 400);
+            }
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            const updatedSkills = profile.skills.filter(s => s !== skill);
+
+            const updatedProfile = await db.profile.update({
+                where: { id: profile.id },
+                data: {
+                    skills: updatedSkills,
                 },
             });
 
