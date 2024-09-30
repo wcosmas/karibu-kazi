@@ -4,26 +4,26 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { client } from "@/lib/hono";
 
-type ResponseType = InferResponseType<typeof client.api.profile["experience"][":id"]["$delete"]>;
+type ResponseType = InferResponseType<typeof client.api.profile["education"][":id"]["$delete"]>;
 
-export const useDeleteExperience = () => {
+export const useDeleteEducation = () => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<ResponseType, Error, string>({
         mutationFn: async (id: string) => {
-            const response = await client.api.profile["experience"][":id"].$delete({
+            const response = await client.api.profile["education"][":id"].$delete({
                 param: { id },
             });
             return response.json();
         },
         onSuccess: (_, id) => {
-            toast.success("Experience deleted");
-            queryClient.invalidateQueries({ queryKey: ["experience", { id }] });
-            queryClient.invalidateQueries({ queryKey: ["experiences"] });
+            toast.success("Education deleted");
+            queryClient.invalidateQueries({ queryKey: ["education", { id }] });
+            queryClient.invalidateQueries({ queryKey: ["educations"] });
             queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
         },
         onError: () => {
-            toast.error("Failed to delete experience");
+            toast.error("Failed to delete education");
         }
     });
 

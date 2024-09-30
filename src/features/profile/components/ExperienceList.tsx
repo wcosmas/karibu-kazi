@@ -5,6 +5,8 @@ import { Experience } from "@prisma/client";
 import { ExperienceSchema } from "../types";
 import { useAddExperience } from "../api/use-add-experience";
 import { useEditExperience } from "../api/use-edit-experience";
+import { useDeleteExperience } from "../api/use-delete-experience";
+import { useConfirm } from "@/hooks/use-confirm";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +30,11 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
     null
   );
   const editMutation = useEditExperience(editingExperience?.id ?? "");
+  const deleteMutation = useDeleteExperience();
+  const [ConfirmDialog, confirm] = useConfirm(
+    "Delete Experience",
+    "Are you sure you want to delete this experience? This action cannot be undone."
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -70,6 +77,13 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
     }
   };
 
+  const handleDeleteExperience = async (id: string) => {
+    const isConfirmed = await confirm();
+    if (isConfirmed) {
+      deleteMutation.mutate(id);
+    }
+  };
+
   const openEditModal = (experience: Experience) => {
     setEditingExperience(experience);
     setIsModalOpen(true);
@@ -103,7 +117,11 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
                 >
                   Edit
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => {}}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleDeleteExperience(exp.id)}
+                >
                   Delete
                 </Button>
               </div>
@@ -136,6 +154,7 @@ export function ExperienceList({ experiences }: ExperienceListProps) {
         }
         experience={editingExperience}
       />
+      <ConfirmDialog />
     </Card>
   );
 }

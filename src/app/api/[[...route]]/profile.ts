@@ -213,7 +213,7 @@ const app = new Hono()
 
             const { id } = c.req.param();
 
-            const existingExperience = await db.experience.delete({
+            const existingExperience = await db.experience.findUnique({
                 where: { id },
             });
 
@@ -239,6 +239,183 @@ const app = new Hono()
 
             return c.json({ experience });
         }
+    )
+    .post(
+        "/education",
+        clerkMiddleware(),
+        zValidator("json", z.object({
+            institution: z.string(),
+            degree: z.string(),
+            fieldOfStudy: z.string(),
+            startDate: z.string(),
+            endDate: z.string().optional(),
+            description: z.string().optional(),
+        })),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            const { institution, degree, fieldOfStudy, startDate, endDate, description } = c.req.valid("json");
+
+            const education = await db.education.create({
+                data: {
+                    institution,
+                    degree,
+                    fieldOfStudy,
+                    startDate: new Date(startDate),
+                    endDate: endDate ? new Date(endDate) : null,
+                    description,
+                    profileId: profile.id,
+                },
+            });
+
+            return c.json({ education });
+        }
+    )
+    .patch(
+        "/education/:id",
+        clerkMiddleware(),
+        zValidator("json", z.object({
+            institution: z.string(),
+            degree: z.string(),
+            fieldOfStudy: z.string(),
+            startDate: z.string(),
+            endDate: z.string().optional(),
+            description: z.string().optional(),
+        })),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const { id } = c.req.param();
+
+            const existingEducation = await db.education.findUnique({
+                where: { id },
+            });
+
+            if (!existingEducation) {
+                return c.json({ error: "Education not found" }, 404);
+            }
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            if (existingEducation.profileId !== profile.id) {
+                return c.json({ error: "Education does not belong to the profile" }, 403);
+            }
+
+            const { institution, degree, fieldOfStudy, startDate, endDate, description } = c.req.valid("json");
+
+            const education = await db.education.update({
+                where: { id },
+                data: {
+                    institution,
+                    degree,
+                    fieldOfStudy,
+                    startDate: new Date(startDate),
+                    endDate: endDate ? new Date(endDate) : null,
+                    description,
+                    profileId: profile.id,
+                },
+            });
+
+            return c.json({ education });
+        }
+    )
+    .delete(
+        "/education/:id",
+        clerkMiddleware(),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const { id } = c.req.param();
+
+            const existingEducation = await db.education.findUnique({
+                where: { id },
+            });
+
+            if (!existingEducation) {
+                return c.json({ error: "Education not found" }, 404);
+            }
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            if (existingEducation.profileId !== profile.id) {
+                return c.json({ error: "Education does not belong to the profile" }, 403);
+            }
+
+            const education = await db.education.delete({
+                where: { id },
+            });
+
+            return c.json({ education });
+        }
+    )
+    .post(
+        "/skills",
+        clerkMiddleware(),
+        zValidator("json", z.object({
+            skills: z.array(z.string()),
+        })),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const { skills } = c.req.valid("json");
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            const updatedProfile = await db.profile.update({
+                where: { id: profile.id },
+                data: {
+                    skills,
+                },
+            });
+
+            return c.json({ updatedProfile });
+        }
     );
+
+
+
+
 
 export default app;
