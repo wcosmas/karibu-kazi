@@ -14,15 +14,19 @@ export const useEditExperience = (id: string) => {
         mutationFn: async (json) => {
             const response = await client.api.profile["experience"][":id"]["$patch"]({
                 param: { id },
-                json,
+                json: {
+                    ...json,
+                    startDate: json.startDate,
+                    endDate: json.endDate ?? undefined,
+                },
             });
             return response.json();
         },
         onSuccess: () => {
             toast.success("Experience updated");
-            queryClient.invalidateQueries({ queryKey: ["experience", { id }], });
-            queryClient.invalidateQueries({ queryKey: ["experiences"], });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"], });
+            queryClient.invalidateQueries({ queryKey: ["experience", { id }] });
+            queryClient.invalidateQueries({ queryKey: ["experiences"] });
+            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
         },
         onError: () => {
             toast.error("Failed to edit experience");

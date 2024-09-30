@@ -1,5 +1,6 @@
 "use client";
 
+import { Experience } from "@prisma/client";
 import { ExperienceSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -32,6 +33,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 // Update the formSchema to match ExperienceSchema
 const formSchema = z.object({
@@ -50,6 +52,7 @@ interface ExperienceModalProps {
   onClose: () => void;
   onSubmit: (experience: ExperienceSchema) => void;
   isLoading: boolean;
+  experience?: Experience | null;
 }
 
 export function ExperienceModal({
@@ -57,28 +60,67 @@ export function ExperienceModal({
   onClose,
   onSubmit,
   isLoading,
+  experience,
 }: ExperienceModalProps) {
+  console.log({ experience });
+
   const form = useForm<ExperienceSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       position: "",
       company: "",
-      location: null,
+      location: "",
       startDate: new Date(),
       endDate: null,
       description: "",
     },
   });
 
+  const resetForm = () => {
+    form.reset({
+      position: "",
+      company: "",
+      location: "",
+      startDate: new Date(),
+      endDate: null,
+      description: "",
+    });
+  };
+
+  useEffect(() => {
+    if (experience) {
+      form.reset({
+        position: experience.position,
+        company: experience.company,
+        location: experience.location,
+        startDate: new Date(experience.startDate),
+        endDate: experience.endDate ? new Date(experience.endDate) : null,
+        description: experience.description || "",
+      });
+    } else if (isOpen) {
+      resetForm();
+    }
+  }, [experience, form, isOpen]);
+
   function handleSubmit(values: ExperienceSchema) {
     onSubmit(values);
+    if (!experience) {
+      resetForm();
+    }
   }
 
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Experience</DialogTitle>
+          <DialogTitle>
+            {experience ? "Edit Experience" : "Add Experience"}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -207,11 +249,17 @@ export function ExperienceModal({
               )}
             />
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button type="button" variant="outline" onClick={handleClose}>
                 Cancel
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Adding..." : "Add Experience"}
+                {isLoading
+                  ? experience
+                    ? "Updating..."
+                    : "Adding..."
+                  : experience
+                  ? "Update Experience"
+                  : "Add Experience"}
               </Button>
             </DialogFooter>
           </form>

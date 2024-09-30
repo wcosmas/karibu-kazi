@@ -201,6 +201,44 @@ const app = new Hono()
             return c.json({ experience });
         }
     )
-    ;
+    .delete(
+        "/experience/:id",
+        clerkMiddleware(),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const { id } = c.req.param();
+
+            const existingExperience = await db.experience.delete({
+                where: { id },
+            });
+
+            if (!existingExperience) {
+                return c.json({ error: "Experience not found" }, 404);
+            }
+
+            const profile = await db.profile.findUnique({
+                where: { userId: auth.userId },
+            });
+
+            if (!profile) {
+                return c.json({ error: "Profile not found" }, 404);
+            }
+
+            if (existingExperience.profileId !== profile.id) {
+                return c.json({ error: "Experience does not belong to the profile" }, 403);
+            }
+
+            const experience = await db.experience.delete({
+                where: { id },
+            });
+
+            return c.json({ experience });
+        }
+    );
 
 export default app;
