@@ -21,6 +21,11 @@ const app = new Hono()
                 where: {
                     userId: auth?.userId,
                 },
+                include: {
+                    education: true,
+                    experience: true,
+                    company: true
+                }
             });
 
             return c.json({ user });
@@ -451,7 +456,27 @@ const app = new Hono()
 
             return c.json({ updatedProfile });
         }
-    );
+    )
+    .post(
+        "/company",
+        clerkMiddleware(),
+        zValidator("json", z.object({
+
+        })),
+        async (c) => {
+            const auth = getAuth(c);
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+
+
+
+        }
+
+    )
+    ;
 
 
 

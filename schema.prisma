@@ -71,14 +71,18 @@ model Experience {
 }
 
 model Company {
-    id          String    @id @default(cuid())
+    id          String  @id @default(cuid())
     name        String
     description String
     logoUrl     String?
     websiteUrl  String?
     location    String
-    jobs        Job[]
-    Profile     Profile[]
+    industry    String
+    size        Int
+    foundedYear Int
+
+    jobs     Job[]
+    profiles Profile[]
 }
 
 model Job {

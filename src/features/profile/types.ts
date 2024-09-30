@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { Experience, Education } from "@prisma/client"
+import { Experience, Education, Prisma } from "@prisma/client"
 
 
 export interface Profile {
@@ -40,4 +40,12 @@ export type EducationFormData = Omit<
     Education,
     "id" | "createdAt" | "updatedAt" | "profileId"
 >;
+
+export type ProfileWithExperienceAndEducation = Prisma.ProfileGetPayload<{
+    include: {
+        education: true,
+        experience: true,
+        company: true,
+    };
+}>;
 
