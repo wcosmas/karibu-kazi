@@ -18,7 +18,7 @@ export const useAddExperience = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["experience"], });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
 
             toast.success("Experience added successfully");
         },

@@ -20,7 +20,7 @@ export const useDeleteExperience = () => {
             toast.success("Experience deleted");
             queryClient.invalidateQueries({ queryKey: ["experience", { id }] });
             queryClient.invalidateQueries({ queryKey: ["experiences"] });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
         onError: () => {
             toast.error("Failed to delete experience");

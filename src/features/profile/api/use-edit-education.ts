@@ -26,7 +26,7 @@ export const useEditEducation = (id: string) => {
             toast.success("Education updated");
             queryClient.invalidateQueries({ queryKey: ["education", { id }] });
             queryClient.invalidateQueries({ queryKey: ["educations"] });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
         onError: () => {
             toast.error("Failed to edit education");

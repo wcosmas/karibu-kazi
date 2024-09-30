@@ -17,7 +17,7 @@ const app = new Hono()
                 return c.json({ error: "Unauthorized" }, 401);
             }
 
-            const user = await db.profile.findFirst({
+            const profile = await db.profile.findFirst({
                 where: {
                     userId: auth?.userId,
                 },
@@ -28,7 +28,7 @@ const app = new Hono()
                 }
             });
 
-            return c.json({ user });
+            return c.json({ profile });
         })
     .get(
         "/job-seeker",

@@ -12,9 +12,9 @@ export const useGetProfile = () => {
                 throw new Error("Failed to fetch profile");
             }
 
-            const { user } = await response.json();
+            const { profile } = await response.json();
 
-            return user;
+            return profile;
         }
     });
 

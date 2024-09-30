@@ -58,7 +58,7 @@ const employer = {
   ],
 };
 
-export default function EmployerDashboardPage() {
+export const EmployerProfile = () => {
   const totalApplicants = employer.jobs.reduce(
     (sum, job) => sum + job.applicants,
     0
@@ -101,4 +101,4 @@ export default function EmployerDashboardPage() {
       </Tabs>
     </div>
   );
-}
+};

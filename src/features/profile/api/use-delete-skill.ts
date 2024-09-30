@@ -18,7 +18,7 @@ export const useDeleteSkill = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["skills"], });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
 
             toast.success("Skill deleted successfully");
         },

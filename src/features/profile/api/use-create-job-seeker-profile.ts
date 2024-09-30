@@ -17,7 +17,7 @@ export const useCreateJobSeekerProfile = () => {
             return response.json();
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
             toast.success("Job seeker profile updated successfully");
         },
         onError: () => {

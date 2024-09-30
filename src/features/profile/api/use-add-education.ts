@@ -18,7 +18,7 @@ export const useAddEducation = () => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["education"], });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
 
             toast.success("Education added successfully");
         },

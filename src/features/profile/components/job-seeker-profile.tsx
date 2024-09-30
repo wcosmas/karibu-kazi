@@ -35,13 +35,13 @@ export const JobSeekerProfile = ({ profile }: JobSeekerProfileProps) => {
           />
         </TabsContent>
         <TabsContent value="experience">
-          <ExperienceList experiences={profile.experience} />
+          <ExperienceList experiences={profile.experience ?? []} />
         </TabsContent>
         <TabsContent value="education">
-          <EducationList educations={profile.education} />
+          <EducationList educations={profile.education ?? []} />
         </TabsContent>
         <TabsContent value="skills">
-          <SkillsList skills={profile.skills} />
+          <SkillsList skills={profile.skills ?? []} />
         </TabsContent>
       </Tabs>
     </div>

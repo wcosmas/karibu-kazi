@@ -1,8 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useGetProfile } from "@/features/profile/api/use-get-profile";
 import {
   Dialog,
   DialogContent,
@@ -12,24 +9,23 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-export function ProfileDialog() {
-  const { data: profile, isLoading } = useGetProfile();
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+interface ProfileDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onRoleChange: (role: "JOBSEEKER" | "EMPLOYER" | null) => void;
+}
 
-  console.log({ profile });
-
-  useEffect(() => {
-    if (!profile) {
-      setIsDialogOpen(true);
-    }
-  }, [profile]);
-
-  const handleDialogClose = () => {
-    setIsDialogOpen(false);
+export function ProfileDialog({
+  isOpen,
+  onClose,
+  onRoleChange,
+}: ProfileDialogProps) {
+  const handleRoleSelection = (role: "JOBSEEKER" | "EMPLOYER") => {
+    onRoleChange(role);
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
+    <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Welcome to Karibu Kazi</DialogTitle>
@@ -38,11 +34,14 @@ export function ProfileDialog() {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4">
-          <Button asChild>
-            <Link href="/profile/job-seeker">Job Seeker</Link>
+          <Button onClick={() => handleRoleSelection("JOBSEEKER")}>
+            Job Seeker
           </Button>
-          <Button asChild variant="outline">
-            <Link href="/profile/employer">Employer</Link>
+          <Button
+            onClick={() => handleRoleSelection("EMPLOYER")}
+            variant="outline"
+          >
+            Employer
           </Button>
         </div>
       </DialogContent>

@@ -26,7 +26,7 @@ export const useEditExperience = (id: string) => {
             toast.success("Experience updated");
             queryClient.invalidateQueries({ queryKey: ["experience", { id }] });
             queryClient.invalidateQueries({ queryKey: ["experiences"] });
-            queryClient.invalidateQueries({ queryKey: ["job-seeker-profile"] });
+            queryClient.invalidateQueries({ queryKey: ["profile"] });
         },
         onError: () => {
             toast.error("Failed to edit experience");
